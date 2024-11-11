@@ -36,9 +36,16 @@ let rec drop_while predikat sez =
 
 (** Funkcija `filter_mapi` *)
 
-let filter_mapi _ _ = failwith __LOC__
-
-
+let filter_mapi f sez = 
+   let rec filter_mapi_rep i sez=
+   match sez with
+   | [] -> []
+   | x :: xs -> 
+      match f i x with
+      | Some rezultat -> rezultat :: filter_mapi_rep (i +1) xs
+      | None -> filter_mapi_rep (i +1) xs
+   in
+   filter_mapi_rep 0 sez
 
 (* let primer_1_8 =
    filter_mapi
@@ -51,38 +58,72 @@ type ('a, 'b) sum = In1 of 'a | In2 of 'b
 
 (** $A \times B \cong B \times A$ *)
 
-let phi1 _ = failwith __LOC__
-let psi1 _ = failwith __LOC__
+let phi1 (a, b) = (b, a)
+let psi1 (b, a) = (a, b)
 
 (** $A + B \cong B + A$ *)
 
-let phi2 _ = failwith __LOC__
-let psi2 _ = failwith __LOC__
+let phi2 = 
+   function
+   |In1 a -> In2 a
+   |In2 b -> In1 b
+
+let psi2  = 
+   function
+   |In1 b -> In2 b
+   |In2 a -> In1 a
 
 (** $A \times (B \times C) \cong (A \times B) \times C$ *)
 
-let phi3 _ = failwith __LOC__
-let psi3 _ = failwith __LOC__
+let phi3 (a, (b,c)) = ((a,b), c)
+let psi3 ((a,b), c) = (a, (b,c))
 
 (** $A + (B + C) \cong (A + B) + C$ *)
 
-let phi4 _ = failwith __LOC__
-let psi4 _ = failwith __LOC__
+let phi4  = 
+   function
+   | In1 a -> In1 (In1 a)
+   | In2 (In1 b) -> In1 (In2 b)
+   | In2 (In2 c) -> In2 c
+
+let psi4  = 
+   function
+   | In1 (In1 a) -> In1 a
+   | In1 (In2 b) -> In2 (In1 b)
+   | In2 c -> In2 (In2 c)
 
 (** $A \times (B + C) \cong (A \times B) + (A \times C)$ *)
 
-let phi5 _ = failwith __LOC__
-let psi5 _ = failwith __LOC__
+let phi5  = 
+   function
+   | (a, In1 b) -> In1 (a, b)
+   | (a, In2 c) -> In2 (a, c)
+
+let psi5  = 
+   function
+   | In1 (a, b) -> (a, In1 b) 
+   | In2 (a, c) -> (a, In2 c)
 
 (** $A^{B + C} \cong A^B \times A^C$ *)
 
-let phi6 _ = failwith __LOC__
-let psi6 _ = failwith __LOC__
+let phi6 f = 
+   let g = (fun b -> f (In1 b)) in
+   let h = (fun c -> f (In2 c)) in
+   (g, h)
+
+let psi6 (f, g)= 
+   function
+   | In1 b -> f b
+   | In2 c -> g c
 
 (** $(A \times B)^C \cong A^C \times B^C$ *)
 
-let phi7 _ = failwith __LOC__
-let psi7 _ = failwith __LOC__
+let phi7 f = 
+   let g  = fun c -> fst (f c) in 
+   let h = fun c -> snd(f c) in 
+   (g, h)
+
+let psi7 (g, h) = fun c -> (g c, h c)
 
 (* ## Polinomi *)
 
@@ -125,16 +166,16 @@ let loci_zadnji sez =
    | x :: xs -> (List.rev xs , xs)
 
 let ( *** ) pol1 pol2 = 
-   let rec mnozenje_rep pol1 pol2 acc =
-      match pol2 with
-      | [] -> acc
-      | x :: xs -> 
-         let(konec, sez_pomozni) = loci_zadnji (List.map (fun y -> x*y) pol1) in
-         match acc with
-         |[] -> mnozenje_rep pol1 xs (sez_pomozni @ konec)
-         |l :: ls -> mnozenje_rep pol1 xs (l :: ((List.map2 (+) sez_pomozni ls) @ konec))
-      in
-      mnozenje_rep pol1 pol2 []
+let rec mnozenje_rep pol1 pol2 acc =
+   match pol2 with
+   | [] -> acc
+   | x :: xs -> 
+      let(konec, sez_pomozni) = loci_zadnji (List.map (fun y -> x*y) pol1) in
+      match acc with
+      |[] -> mnozenje_rep pol1 xs (sez_pomozni @ konec)
+      |l :: ls -> mnozenje_rep pol1 xs (l :: ((List.map2 (+) sez_pomozni ls) @ konec))
+   in
+   mnozenje_rep pol1 pol2 []
 
 (* let primer_3_4 = [ 1; 1 ] *** [ 1; 1 ] *** [ 1; 1 ] *)
 (* let primer_3_5 = [ 1; 1 ] *** [ 1; -1 ] *)
@@ -171,20 +212,25 @@ let odvod pol =
 
 (** Lep izpis *)
 
-let izpis pol = 
-   let rec izpis_rep pol niz s=
-   match pol with
-   | [] -> niz
-   |0 :: xs -> izpis_rep xs niz (s+1)
-   |x :: xs when s = 0 -> izpis_rep xs (string_of_int x ^ niz ) (s+1)
-   |1 :: xs -> if s =1 then izpis_rep xs ("x" ^ " + "^ niz) (s+1) else 
-      izpis_rep xs ("x^" ^ string_of_int s ^" + "  ^ niz) (s+1)
-   |(-1) :: xs -> if s =1 then izpis_rep xs ("- x" ^ " + "^ niz) (s+1) else 
-      izpis_rep xs ("- x^" ^ string_of_int s ^" + "  ^ niz) (s+1)
-   |x :: xs -> if s =1 then izpis_rep xs ( string_of_int x ^ " x" ^ " + "^ niz) (s+1) else
-      izpis_rep xs ( string_of_int x ^ " x^" ^ string_of_int s ^" + "  ^ niz) (s+1)
+let izpis pol =
+   let rec izpis_rep pol eksp niz =
+     match pol with
+     | [] -> niz
+     | 0 :: xs -> izpis_rep xs (eksp - 1) niz  
+     | x :: xs ->
+       let clen =
+         match eksp with
+         | 0 -> string_of_int (abs x)
+         | 1 -> (if (abs x) = 1 then "" else string_of_int (abs x)) ^ " x"
+         | _ -> (if (abs x) = 1 then "" else string_of_int (abs x)) ^ " x^" ^ string_of_int eksp
+       in
+       let znak = if x > 0 && niz <> "" then " + " else if x < 0 then " -" else "" 
+       in
+       izpis_rep xs (eksp - 1) (niz ^ znak ^ clen)
    in
-   izpis_rep pol "" 0
+   izpis_rep (List.rev pol) (List.length pol - 1) ""
+ 
+
 (* let primer_3_8 = izpis [ 1; 2; 1 ] *)
 (* let primer_3_9 = izpis [ 1; 0; -1; 0; 1; 0; -1; 0; 1; 0; -1; 0; 1 ] *)
 (* let primer_3_10 = izpis [ 0; -3; 3; -1 ] *)
@@ -213,44 +259,66 @@ let ( ++. ) : odvedljiva -> odvedljiva -> odvedljiva =
 
 (** Vrednost odvoda *)
 
-(*let vrednost _ _ = failwith __LOC__
-let odvod _ _ = failwith __LOC__*)
+let vrednost : odvedljiva -> float -> float=
+   fun (f,_) arg -> f arg
+   
+let odvod : odvedljiva -> float -> float= 
+   fun (_, f')  arg -> f' arg
 
 (** Osnovne funkcije *)
 
-let konstanta _ = failwith __LOC__
-let identiteta = ((fun _ -> failwith __LOC__), fun _ -> failwith __LOC__)
+let konstanta  : float -> odvedljiva = 
+   fun c-> ((fun _ -> c), fun _ -> 0.)
+let identiteta :odvedljiva = ((fun x -> x), fun _ -> 1.)
 
 (** Produkt in kvocient *)
 
-let ( **. ) _ _ = failwith __LOC__
-let ( //. ) _ _ = failwith __LOC__
-(* let kvadrat = identiteta **. identiteta *)
+let ( **. )  : odvedljiva -> odvedljiva -> odvedljiva  = 
+   fun (f, f')(g, g') -> ((fun x -> f x *. g x), (fun x -> f' x *. g x +. g' x *. f x))
+let ( //. ) : odvedljiva -> odvedljiva -> odvedljiva= 
+   fun (f, f') (g, g') -> ((fun x ->  f x /. g x), (fun x -> (f' x *. g x -. g' x *. f x) /. (g x *. g x)))
+      
+let kvadrat = identiteta **. identiteta 
 
 (** Kompozitum *)
 
-let ( @@. ) _ _ = failwith __LOC__
+let ( @@. ): odvedljiva -> odvedljiva -> odvedljiva = 
+   fun (f, f') (g, g') -> ((fun x -> f (g x)), (fun x -> f' (g x) *. g' x))
 (* let vedno_ena = (kvadrat @@. sinus) ++. (kvadrat @@. kosinus) *)
 (* let primer_4_1 = vrednost vedno_ena 12345. *)
 (* let primer_4_2 = odvod vedno_ena 12345. *)
 
 (* ## Substitucijska šifra *)
-
+let abeceda = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 let quick_brown_fox = "THEQUICKBRWNFXJMPSOVLAZYDG"
 let rot13 = "NOPQRSTUVWXYZABCDEFGHIJKLM"
 let indeks c = Char.code c - Char.code 'A'
 let crka i = Char.chr (i + Char.code 'A')
 
 (** Šifriranje *)
-
-let sifriraj _ _ = failwith __LOC__
+let sifriraj sifra besedilo = 
+   let pomozna znak=
+      if String.contains abeceda znak then 
+         let indeks = String.index abeceda znak in
+         sifra.[indeks]
+      else znak 
+   in
+   String.map pomozna besedilo
 (* let primer_5_1 = sifriraj quick_brown_fox "HELLO, WORLD!" *)
 (* let primer_5_2 = "VENI, VIDI, VICI" |> sifriraj rot13 *)
 (* let primer_5_3 = "VENI, VIDI, VICI" |> sifriraj rot13 |> sifriraj rot13 *)
 
 (** Inverzni ključ *)
 
-let inverz _ = failwith __LOC__
+let inverz sifra  = 
+   let pomozna znak = 
+      if String.contains abeceda znak then 
+         let indeks = String.index sifra znak in
+         abeceda.[indeks]
+      else znak
+   in
+   String.map pomozna abeceda
+
 (* let primer_5_4 = inverz quick_brown_fox *)
 (* let primer_5_5 = inverz rot13 = rot13 *)
 (* let primer_5_6 = inverz "BCDEA" *)
