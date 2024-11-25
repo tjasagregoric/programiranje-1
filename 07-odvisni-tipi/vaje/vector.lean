@@ -37,7 +37,11 @@ inductive Finite : Naravno -> Type where
 
 
 def lookup {A : Type} {n : Naravno} : Vektor A n -> Finite n -> A :=
-  sorry
+  fun xs i =>
+    match xs , i with
+    | Finite.fzero , Vektor.sestavljen y ys => ForInStep.yield
+    | Finite.fsucc i' , Vektor.sestavljen y ys => lookup ys i'
+
 
 
 -- Včasih enakost tipov ni takoj očitna in jo moramo izpeljati
@@ -46,6 +50,12 @@ def lookup {A : Type} {n : Naravno} : Vektor A n -> Finite n -> A :=
 def stakni_vektorja' : {A : Type} → {m n : Naravno} → Vektor A m → Vektor A n → Vektor A (plus n m) :=
   sorry
 
+def add_c : {m n : Naravno} : Vektor A n
+
 -- Uporabite samo definicijo `stakni_vektorja'` in taktike `rw` in `exact`.
 def stakni_vektorja'' : {A : Type} → {m n : Naravno} → Vektor A m → Vektor A n → Vektor A (plus m n) :=
-  sorry
+  by
+    intro A m n xs ys
+    have xx := stakni_vektorja' xs ys
+    rw [add_c] at xx
+    exact xx
