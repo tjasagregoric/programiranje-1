@@ -511,15 +511,15 @@ let pop_stack state =
   | [] -> failwith "Sklad je prazen"
   | x :: xs -> (x, {state with stack = xs})
 
-(* let primer_izvajanje_10 =
+(* let primer_izvajanje_11 =
   push_stack { empty with stack = [1; 2; 3] } 42 *)
-(* val primer_izvajanje_10 : state =
+(* val primer_izvajanje_11 : state =
   {instructions = [||]; a = 0; b = 0; c = 0; d = 0; ip = Address 0;
    zero = false; carry = false; stack = [42; 1; 2; 3]} *)
 
-(* let primer_izvajanje_11 =
+(* let primer_izvajanje_12 =
   pop_stack { empty with stack = [1; 2; 3] } *)
-(* val primer_izvajanje_11 : int * state =
+(* val primer_izvajanje_12 : int * state =
   (1,
    {instructions = [||]; a = 0; b = 0; c = 0; d = 0; ip = Address 0;
     zero = false; carry = false; stack = [2; 3]}) *)
@@ -541,9 +541,9 @@ let compare state st1 st2 =
     if st1 < st2 then {state with zero = false ; carry = true}  
     else {state with zero = false ; carry = false}
 
-(* let primer_izvajanje_12 =
+(* let primer_izvajanje_13 =
   compare empty 24 42 *)
-(* val primer_izvajanje_12 : state =
+(* val primer_izvajanje_13 : state =
   {instructions = [||]; a = 0; b = 0; c = 0; d = 0; ip = Address 0;
    zero = false; carry = true; stack = []} *)
 
@@ -558,15 +558,15 @@ let conditional_jump state address pogoj =
     if pogoj = true then address else next state.ip in
   {state with ip = nov_ip} 
 
-(* let primer_izvajanje_13 =
+(* let primer_izvajanje_14 =
   conditional_jump { empty with ip = Address 42 } (Address 10) true *)
-(* val primer_izvajanje_13 : state =
+(* val primer_izvajanje_14 : state =
   {instructions = [||]; a = 0; b = 0; c = 0; d = 0; ip = Address 10;
    zero = false; carry = false; stack = []} *)
 
-(* let primer_izvajanje_14 =
+(* let primer_izvajanje_15 =
   conditional_jump { empty with ip = Address 42 } (Address 10) false *)
-(* val primer_izvajanje_14 : state =
+(* val primer_izvajanje_15 : state =
   {instructions = [||]; a = 0; b = 0; c = 0; d = 0; ip = Address 43;
    zero = false; carry = false; stack = []} *)
 
@@ -584,9 +584,9 @@ let call state address =
   let novi_sklad = naslednji_naslov :: state.stack in
   {state with ip = address; stack = novi_sklad}
 
-(* let primer_izvajanje_15 =
+(* let primer_izvajanje_16 =
   call { empty with ip = Address 42 } (Address 10) *)
-(* val primer_izvajanje_15 : state =
+(* val primer_izvajanje_16 : state =
   {instructions = [||]; a = 0; b = 0; c = 0; d = 0; ip = Address 10;
    zero = false; carry = false; stack = [43]} *)
 
@@ -600,9 +600,9 @@ let return state =
   | [] -> failwith "sklad je prazen"
   | x :: novi_sklad -> {state with ip = Address x ; stack = novi_sklad}
 
-(* let primer_izvajanje_16 =
+(* let primer_izvajanje_17 =
   return { empty with ip = (Address 100); stack = [42; 43; 44] } *)
-(* val primer_izvajanje_16 : state =
+(* val primer_izvajanje_17 : state =
   {instructions = [||]; a = 0; b = 0; c = 0; d = 0; ip = Address 42;
    zero = false; carry = false; stack = [43; 44]} *)
 
@@ -669,11 +669,11 @@ let return state =
 
 let rec run_program _ = ()
 
-(* let primer_izvajanje_16 =
+(* let primer_izvajanje_18 =
   fibonacci 10
   |> init
   |> run_program *)
-(* val primer_izvajanje_16 : state =
+(* val primer_izvajanje_18 : state =
   {instructions =
     [|JMP (Address 20); PUSH (Register C); PUSH (Register B);
       MOV (C, Register A); CMP (A, Const 0); JE (Address 17);
