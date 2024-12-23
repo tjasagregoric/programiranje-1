@@ -1,6 +1,11 @@
 (* 
 Natančno definirajte pogoje, da funkcija `f` uredi seznam. 
 *)
+let rec rev xs =
+    match xs with
+    | [] -> []
+    | x :: xs' -> (rev xs') @ [x]
+
 
 (*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*]
  Urejanje z Vstavljanjem
@@ -17,7 +22,14 @@ Natančno definirajte pogoje, da funkcija `f` uredi seznam.
  # insert 7 [];;
  - : int list = [7]
 [*----------------------------------------------------------------------------*)
-
+let rec insert num lst =
+    match lst with
+    | [] -> num :: []
+    | x :: xs -> 
+        if x > num then 
+            num :: x :: xs (*ekv: [num] @ [x] @ xs*)
+        else
+            x :: (insert num xs) (*ekv: [x] @ (insert num xs)*)
 
 (*----------------------------------------------------------------------------*]
  Prazen seznam je že urejen. Funkcija [insert_sort] uredi seznam tako da
