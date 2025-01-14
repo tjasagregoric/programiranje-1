@@ -1,4 +1,3 @@
-
 set_option autoImplicit false
 
 /------------------------------------------------------------------------------
@@ -11,35 +10,13 @@ set_option autoImplicit false
 ------------------------------------------------------------------------------/
 
 def vsota_prvih : Nat → Nat :=
-  fun n =>
-    match n with
-    | 0 => 0
-    | Nat.succ n => Nat.succ n + vsota_prvih n
+  sorry
 
 theorem gauss : (n : Nat) → 2 * vsota_prvih n = n * (n + 1) := by
-  intro n
-  induction n with
-  | zero =>
-    simp [vsota_prvih]
-
-  | succ k ih =>
-    simp [vsota_prvih]
-    rw [Nat.mul_add]
-    rw[ih]
-    calc
-    2 * (k + 1) + k * (k + 1)
-        = k * (k + 1) + 2 * (k + 1) := by rw [Nat.add_comm]
-        _= (k + 2) * (k + 1) := by rw [Nat.right_distrib]
-        _= (k + 1) * (k + 2) := by rw [Nat.mul_comm]
+  sorry
 
 theorem cisto_pravi_gauss : (n : Nat) → vsota_prvih n = (n * (n + 1)) / 2 := by
-  intro n
-  have h := gauss n
-  calc
-  vsota_prvih n
-      = vsota_prvih n * 2 / 2 := by rw[Nat.mul_div_cancel _ (Nat.zero_lt_succ _)]
-      _= 2 * vsota_prvih n / 2 := by rw [Nat.mul_comm]
-      _=n * (n + 1) / 2 := by rw [h]
+  sorry
 
 /------------------------------------------------------------------------------
  ## Vektorji
@@ -63,17 +40,13 @@ def stakni : {A : Type} → {m n : Nat} → Vektor A m → Vektor A n → Vektor
   | .sestavljen x xs' => by rw [Nat.add_right_comm]; exact Vektor.sestavljen x (stakni xs' ys)
 
 def obrni : {A : Type} → {n : Nat} → Vektor A n → Vektor A n :=
-  fun vektor => match vektor with
-  | .prazen => Vektor.prazen
-  | .sestavljen x xs => stakni (obrni xs) (Vektor.sestavljen x Vektor.prazen)
+  sorry
 
-def glava : {A : Type} → {n : Nat} → Vektor A (n + 1) → A :=
-  fun vektor => match vektor with
-  | .sestavljen x _ => x
+def glava : sorry :=
+  sorry
 
-def rep : {A : Type} → {n : Nat} → Vektor A (n + 1) → Vektor A n :=
-  fun vektor => match vektor with
-  | .sestavljen _ xs => xs
+def rep : sorry :=
+  sorry
 
 /------------------------------------------------------------------------------
  ## Predikatni račun
@@ -86,20 +59,11 @@ def rep : {A : Type} → {n : Nat} → Vektor A (n + 1) → Vektor A n :=
 
 theorem forall_implies : {A : Type} → {P Q : A → Prop} →
   (∀ x, (P x → Q x)) → (∀ x, P x) → (∀ x, Q x) := by
-  intros A P Q h1 h2 x
-  apply h1 x
-  apply h2 x
+  sorry
 
 theorem forall_implies' : {A : Type} → {P : Prop} → {Q : A → Prop} →
   (∀ x, (P → Q x)) ↔ (P → ∀ x, Q x) := by
-  intros A P Q
-  apply Iff.intro
-
-  intro h p x
-  exact h x p
-
-  intro h x p
-  exact h p x
+  sorry
 
 theorem paradoks_pivca :
   {G : Type} → {P : G → Prop} →
@@ -147,6 +111,7 @@ theorem zrcali_zrcali :
   {A : Type} → (t : Drevo A) →
   zrcali (zrcali t) = t := by
   sorry
+
 theorem visina_zrcali :
   {A : Type} → (t : Drevo A) →
   visina (zrcali t) = visina t := by
