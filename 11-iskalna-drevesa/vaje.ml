@@ -1,4 +1,4 @@
-(* ========== Vaja 4: Iskalna Drevesa  ========== *)
+(* ========== Vaje 11: Iskalna Drevesa  ========== *)
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  Ocaml omogoča enostavno delo z drevesi. Konstruiramo nov tip dreves, ki so
@@ -6,9 +6,14 @@
  poddrevesi. Na tej točki ne predpostavljamo ničesar drugega o obliki dreves.
 [*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*)
 
+<<<<<<< HEAD
 type 'a tree = 
 | Empty
 | Node of 'a * 'a tree * 'a tree
+=======
+
+
+>>>>>>> 23c1522441c8e94e426cb90cee52bfaa3940a7c4
 (*----------------------------------------------------------------------------*]
  Definirajmo si testni primer za preizkušanje funkcij v nadaljevanju. Testni
  primer predstavlja spodaj narisano drevo, pomagamo pa si s pomožno funkcijo
